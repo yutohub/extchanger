@@ -1,7 +1,6 @@
 package converter
 
 import (
-	"errors"
 	"fmt"
 	"image"
 	"image/jpeg"
@@ -21,18 +20,18 @@ type conv struct {
 func NewConv(from string, to string, dir string) (*conv, error) {
 	// Check if the extension can be converted
 	if from != "png" && from != "jpg" && from != "jpeg" {
-		return nil, errors.New(fmt.Sprintf("Error: %#v is not supported.", from))
+		return nil, fmt.Errorf("error: %#v is not supported", from)
 	}
 	if to != "png" && to != "jpg" && to != "jpeg" {
-		return nil, errors.New(fmt.Sprintf("Error: %#v is not supported.", to))
+		return nil, fmt.Errorf("error: %#v is not supported", to)
 	}
 	// Check if input and output are the same
 	if from == to {
-		return nil, errors.New(fmt.Sprint("Error: -from and -to are same."))
+		return nil, fmt.Errorf("error: -from and -to are same")
 	}
 	// Check if the directory exists
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		return nil, errors.New(fmt.Sprintf("Error: %#v is not exists.", dir))
+		return nil, fmt.Errorf("error: %#v is not exists", dir)
 	}
 	// Initialize and return a structure
 	c := conv{
@@ -47,7 +46,7 @@ func NewConv(from string, to string, dir string) (*conv, error) {
 func (c *conv) getFilePaths() error {
 	err := filepath.Walk(c.dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			return errors.New(fmt.Sprintf("Error: Check if %#v is not exists", c.dir))
+			return fmt.Errorf("error: Check if %#v is not exists", c.dir)
 		}
 		// In the case of a directory
 		if info.IsDir() {
@@ -67,13 +66,13 @@ func convert(dst, src string) error {
 	// Open image files
 	sf, err := os.Open(src)
 	if err != nil {
-		return fmt.Errorf("Cannot open image file. %s", src)
+		return fmt.Errorf("cannot open image file. %s", src)
 	}
 	defer sf.Close()
 	// Create a file
 	df, err := os.Create(dst)
 	if err != nil {
-		return fmt.Errorf("Failed to create image file. %s", dst)
+		return fmt.Errorf("failed to create image file. %s", dst)
 	}
 	defer df.Close()
 	// Decode images from input files into memory
@@ -91,7 +90,7 @@ func convert(dst, src string) error {
 		err = os.Remove(dst)
 	}
 	if err != nil {
-		return fmt.Errorf("Could not export image file. %s", dst)
+		return fmt.Errorf("could not export image file. %s", dst)
 	}
 	return nil
 }
