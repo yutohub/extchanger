@@ -1,10 +1,11 @@
 package main
 
 import (
-	"extchanger/converter"
 	"flag"
 	"fmt"
 	"os"
+
+	"github.com/yutohub/extchanger/converter"
 )
 
 var (
